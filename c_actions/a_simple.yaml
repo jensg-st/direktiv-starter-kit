@@ -1,3 +1,7 @@
+functions:
+- id: http
+  image: direktiv/request:v4
+  type: knative-workflow
 states:
 - id: validate
   type: validate
@@ -16,4 +20,10 @@ states:
   type: noop
   log: jq(.joke)
   transform: 'jq(. + { "date": now | strftime("%a %b %d, %Y %Z %H:%M:%S") })'
-     
+  transition: get-joke
+- id: get-joke     
+  type: action
+  action:
+    function: http 
+    input: 
+      url: https://v2.jokeapi.dev/joke/jq(.joke)?type=single

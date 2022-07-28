@@ -1,0 +1,50 @@
+functions:
+- id: http
+  image: direktiv/request:v4
+  type: knative-workflow
+states:
+- id: validate
+  type: validate
+  schema:
+    title: What Joke
+    type: object
+    required: ["joke"]
+    additionalProperties: false
+    properties:
+      joke:
+        type: string
+        title: Joke Topic
+        enum: ["Programming", "Dark", "Pun"]
+  transition: start
+- id: start
+  type: noop
+  log: jq(.joke)
+  transform: 'jq(. + { "date": now | strftime("%a %b %d, %Y %Z %H:%M:%S") })'
+  transition: get-joke
+- id: get-joke     
+  type: action
+  action:
+    function: http 
+    input: 
+      url: https://v2.jokeapi.dev/joke/Programming?type=single
+  transform:
+    joke: jq(.return.body.joke)
+    safe: jq(.return.body.safe)
+  transition: check
+
+- id: check
+  type: switch
+  conditions:
+  - condition: jq(.safe != true)
+    transform: 'jq(. + { "joke": "This joke was inappropriate"})'
+  defaultTransition: done
+
+- id: done
+  type: noop
+  log: joke was delivered
+  transform: |
+    js(
+      data["info"] = "This joke was considered funny at " + new Date()
+      return data
+    )
+
