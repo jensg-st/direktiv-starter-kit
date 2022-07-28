@@ -1,0 +1,24 @@
+states:
+- id: validate
+  type: validate
+  schema:
+    title: What Joke
+    type: object
+    required: ["joke"]
+    additionalProperties: false
+    properties:
+      joke:
+        type: string
+        title: Joke Topic
+        enum: ["Programming", "Dark", "Pun"]
+  transition: start
+- id: start
+  type: noop
+  log: jq(.joke)
+  transform: |
+    js(
+      data["hello"] = "world"
+      return data
+    )
+  # transform: 'jq(. + { "date": now | strftime("%a %b %d, %Y %Z %H:%M:%S") })'
+     

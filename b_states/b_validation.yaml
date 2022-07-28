@@ -1,0 +1,17 @@
+states:
+- id: validate
+  type: validate
+  schema:
+    title: What Joke
+    type: object
+    required: ["joke"]
+    additionalProperties: false
+    properties:
+      joke:
+        type: string
+        title: Joke Topic
+        enum: ["Programming", "Dark", "Pun"]
+  transition: start
+- id: start
+  type: noop
+  log: jq(.joke)
