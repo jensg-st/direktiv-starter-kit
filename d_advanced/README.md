@@ -24,3 +24,11 @@ If the joke is inappropriate it throws an error, the parent retries one more tim
     transition: no-joke
 ```
 
+
+*Calls*:
+
+```
+echo '{ "joke": "Programming" }'  | direktiv-sync exec d_advanced/a_flow.yaml
+echo '{ "joke": "Dark" }'  | direktiv-sync exec d_advanced/a_flow.yaml
+```
+

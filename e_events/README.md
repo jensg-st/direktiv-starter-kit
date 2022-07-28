@@ -8,4 +8,11 @@ http://SERVER/api/namespaces/getting-started/tree/e_events/a_flow?op=wait
 
 Or targeting one field in the response:
 
-http://10.100.6.10/api/namespaces/getting-started/tree/e_events/a_flow?op=wait&input.joke=Dark&field=joke&raw-output=true&ctype=text/html
+http://SERVER/api/namespaces/getting-started/tree/e_events/a_flow?op=wait&input.joke=Dark&field=joke&raw-output=true&ctype=text/html
+
+
+*Calls*:
+
+```
+echo '{ "joke": "Programming" }'  | direktiv-sync exec e_events/a_flow.yaml
+```

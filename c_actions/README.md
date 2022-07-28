@@ -16,6 +16,15 @@ As already mentioned jq/javascript can be used in many locations. In this case w
       url: https://v2.jokeapi.dev/joke/jq(.joke)?type=single
 ```
 
+
+*Calls*:
+
+```
+echo '{ "joke": "Programming" }'  | direktiv-sync exec c_actions/a_simple.yaml
+```
+
+
+
 ## b_modify
 
 Running the flow returns a huge payload with headers etc. from that request. To get only parts we are interested in jq can be used again in a transform. This is a good example to use the jq playground to figure out what the transformation should look like. In this case:
@@ -25,10 +34,23 @@ transform:
     joke: jq(.return.body.joke)
 ```
 
+
+*Calls*:
+
+```
+echo '{ "joke": "Programming" }'  | direktiv-sync exec c_actions/b_modify.yaml
+```
+
+
+
 ## c_conditional
 
 Further inspection of the return payload from the joke API show that jokes are getting rated safe / unsafe with the `safe` attribute in the response. In this workflow the switch checks the value and decides based on the value if it censors the joke and stops or transitions with a defaultTransition to the `done` state which adds the time via a javascript transform.
 
 
+*Calls*:
 
-http://10.100.6.10/api/namespaces/getting-started/tree/c_actions/c_conditional?op=wait&input.joke=Dark&field=joke&raw-output=true&ctype=plain/text
+```
+echo '{ "joke": "Programming" }'  | direktiv-sync exec c_actions/c_conditional.yaml
+```
+

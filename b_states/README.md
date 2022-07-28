@@ -10,6 +10,12 @@ The base workflow only logs the incoming data to the console. Every flow instanc
 }
 ```
 
+*Calls*:
+
+```
+echo '{ "hello": "world" }' | direktiv-sync exec b_states/a_base.yaml
+```
+
 ## b_validation
 
 We wil use the [Joke API](https://sv443.net/jokeapi/v2/) in this example and want the service to get the joke topic when it starts. For this we have added a validation state at the beginnig of the flow. The validation state is a JSON-Schema state to protect the flow from rogue data. In this exmaple we are setting `additionalProperties` to false and `joke` as required. With that step we can be sure that there is no "wrong" data coming in. The following would work:
@@ -52,6 +58,12 @@ transform: |
     )
 ```
 
+
+*Calls*:
+
+```
+echo '{ "joke": "Programming" }'  | direktiv-sync exec b_states/c_transform.yaml
+```
 
 
 
