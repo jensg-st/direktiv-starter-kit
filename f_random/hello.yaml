@@ -1,0 +1,19 @@
+functions:
+- id: bash
+  image: gcr.io/direktiv/apps/bash:1.0
+  type: knative-workflow
+
+states:
+- id: bash
+  type: action
+  action:
+    function: bash
+    secrets: ["mysecret"]
+    files:
+    - key: hello.txt
+      scope: workflow
+    input: 
+      commands:
+      - command: cat hello.txt
+      - command: echo jq(.secrets.mysecret)
+      - command: bash -c 'date > out/workflow/now'
