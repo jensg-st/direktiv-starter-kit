@@ -3,24 +3,11 @@ functions:
   image: direktiv/request:v4
   type: knative-workflow
 states:
-- id: validate
-  type: validate
-  schema:
-    title: What Joke
-    type: object
-    required: ["joke"]
-    additionalProperties: false
-    properties:
-      joke:
-        type: string
-        title: Joke Topic
-        enum: ["Programming", "Dark", "Pun"]
-  transition: start
 - id: start
   type: noop
   log: jq(.joke)
-  transform: 'jq(. + { "date": now | strftime("%a %b %d, %Y %Z %H:%M:%S") })'
   transition: get-joke
+
 - id: get-joke     
   type: action
   action:
@@ -36,7 +23,7 @@ states:
   type: switch
   conditions:
   - condition: jq(.safe != true)
-    transform: 'jq(. + { "joke": "This joke was inappropriate"})'
+    transition: throw-error
   defaultTransition: done
 
 - id: done
@@ -47,4 +34,9 @@ states:
       data["info"] = "This joke was considered funny at " + new Date()
       return data
     )
+
+- id: throw-error
+  type: error
+  error: inappropriate
+  message: The joke jq(.joke) was inappropriate
 

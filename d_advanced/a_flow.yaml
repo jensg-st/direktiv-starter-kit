@@ -1,7 +1,8 @@
 functions:
-- id: http
-  image: direktiv/request:v4
-  type: knative-workflow
+- id: sub
+  workflow: a_subflow
+  type: subflow
+
 states:
 - id: validate
   type: validate
@@ -15,17 +16,27 @@ states:
         type: string
         title: Joke Topic
         enum: ["Programming", "Dark", "Pun"]
-  transition: start
-- id: start
-  type: noop
-  log: jq(.joke)
-  transform: 'jq(. + { "date": now | strftime("%a %b %d, %Y %Z %H:%M:%S") })'
   transition: get-joke
+
 - id: get-joke     
   type: action
   action:
-    function: http 
+    function: sub 
     input: 
-      url: https://v2.jokeapi.dev/joke/jq(.joke)?type=single
+      joke: jq(.joke)
+    retries:
+      max_attempts: 1
+      delay: PT5S
+      codes: ["inappropriate"]
+  catch:
+  - error: "*"
+    transition: no-joke
   transform:
-    joke: jq(.return.body.joke)
+    joke: jq(.return.joke)
+    safe: jq(.return.safe)
+
+- id: no-joke
+  type: noop
+  transform:
+    joke: We are not funny today
+

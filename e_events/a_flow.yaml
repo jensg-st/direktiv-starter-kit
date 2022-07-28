@@ -1,0 +1,39 @@
+functions:
+- id: sub
+  workflow: a_subflow
+  type: subflow
+
+states:
+- id: validate
+  type: validate
+  schema:
+    title: What Joke
+    type: object
+    required: ["joke"]
+    additionalProperties: false
+    properties:
+      joke:
+        type: string
+        title: Joke Topic
+        enum: ["Programming", "Dark", "Pun"]
+  transition: request-joke
+
+- id: request-joke
+  type: generateEvent
+  event:
+    type: give.me.a.joke
+    source: joker
+    data: ''
+    context:
+      joke: jq(.joke)
+  transition: wait-joke
+  
+- id: wait-joke
+  type: consumeEvent
+  timeout: PT15M
+  event:
+    type: here.is.a.joke
+    context:
+      topic: jq(.joke)
+  transform: 
+    joke: jq(."here.is.a.joke".joke)

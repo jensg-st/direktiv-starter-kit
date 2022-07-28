@@ -31,4 +31,4 @@ Further inspection of the return payload from the joke API show that jokes are g
 
 
 
-
+http://10.100.6.10/api/namespaces/getting-started/tree/c_actions/c_conditional?op=wait&input.joke=Dark&field=joke&raw-output=true&ctype=plain/text
